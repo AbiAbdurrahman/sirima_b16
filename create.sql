@@ -10,21 +10,20 @@ CREATE TABLE AKUN(
 );
 
 CREATE TABLE PERIODE_PENERIMAAN(
-	nomor SMALLINT NOT NULL UNIQUE,
-	tahun YEAR NOT NULL UNIQUE,
+	nomor SMALLINT NOT NULL,
+	tahun YEAR NOT NULL,
 	PRIMARY KEY(nomor, tahun)
 );
 
 CREATE TABLE JADWAL_PENTING(
-	nomor SMALLINT NOT NULL UNIQUE,
-	tahun YEAR NOT NULL UNIQUE,
+	nomor SMALLINT NOT NULL,
+	tahun YEAR NOT NULL,
 	jenjang CHAR(2) NOT NULL,
 	waktu_mulai TIMESTAMP NOT NULL,
 	waktu_selesai TIMESTAMP NOT NULL,
 	deskripsi VARCHAR(150) NOT NULL,
 	PRIMARY KEY(nomor, tahun, jenjang, waktu_mulai),
-	FOREIGN KEY(nomor) REFERENCES PERIODE_PENERIMAAN(nomor),
-	FOREIGN KEY(tahun) REFERENCES PERIODE_PENERIMAAN(tahun),
+	FOREIGN KEY(nomor, tahun) REFERENCES PERIODE_PENERIMAAN(nomor, tahun),
 	FOREIGN KEY(jenjang) REFERENCES JENJANG(nama)  
 );
 
@@ -51,8 +50,7 @@ CREATE TABLE PENERIMAAN_PRODI(
 	jumlah_pelamar INT,
 	jumlah_diterima INT,
 	PRIMARY KEY(nomor_periode, tahun_periode, kode_prodi),
-	FOREIGN KEY(nomor_periode) REFERENCES PERIODE_PENERIMAAN(nomor),
-	FOREIGN KEY(tahun_periode) REFERENCES PERIODE_PENERIMAAN(tahun)  
+	FOREIGN KEY(nomor_periode, tahun_periode) REFERENCES PERIODE_PENERIMAAN(nomor, tahun) 
 );
 
 CREATE TABLE PELAMAR(
@@ -77,8 +75,7 @@ CREATE TABLE PENDAFTARAN(
 	tahun_periode YEAR NOT NULL,
 	PRIMARY KEY(id),
 	FOREIGN KEY(pelamar) REFERENCES PELAMAR(username),
-	FOREIGN KEY(nomor_periode) REFERENCES PERIODE_PENERIMAAN(nomor),
-	FOREIGN KEY(tahun_periode) REFERENCES PERIODE_PENERIMAAN(tahun)  
+	FOREIGN KEY(nomor_periode, tahun_periode) REFERENCES PERIODE_PENERIMAAN(nomor, tahun),
 );
 
 CREATE TABLE PENDAFTARAN_UUI(
@@ -102,7 +99,7 @@ CREATE TABLE REKOMENDASI(
 	nilai INT NOT NULL,
 	komentar TEXT NOT NULL,
 	PRIMARY KEY(tgl_review, id_pendaftaran),
-	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN_UUI(id_pendaftaran),
+	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN_UUI(id_pendaftaran)
 );
 
 CREATE TABLE PENDAFTARAN_SEMAS(
@@ -110,8 +107,11 @@ CREATE TABLE PENDAFTARAN_SEMAS(
 	status_hadir BOOLEAN NOT NULL,
 	nilai_ujian INT NOT NULL,
 	no_kartu_ujian CHAR(10) NOT NULL,
+	lokasi_kota VARCHAR(100) NOT NULL,
+	lokasi_tempat VARCHAR(150) NOT NULL,
 	PRIMARY KEY(id_pendaftaran),
 	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN(id)  
+	FOREIGN KEY(lokasi_kota, lokasi_tempat) REFERENCES LOKASI_UJIAN(kota, tempat)
 );
 
 CREATE TABLE PENDAFTARAN_SEMAS_SARJANA(
@@ -163,10 +163,7 @@ CREATE TABLE LOKASI_UJIAN(
 	jenjang CHAR(2) NOT NULL,
 	waktu_awal TIMESTAMP NOT NULL,
 	PRIMARY KEY(kota,tempat),
-	FOREIGN KEY(nomor_periode) REFERENCES JADWAL_PENTING(nomor),
-	FOREIGN KEY(tahun_periode) REFERENCES JADWAL_PENTING(tahun),
-	FOREIGN KEY(jenjang) REFERENCES JADWAL_PENTING(jenjang),
-	FOREIGN KEY(waktu_awal) REFERENCES JADWAL_PENTING(waktu_mulai)
+	FOREIGN KEY(nomor_periode, tahun_periode, jenjang, waktu_awal) REFERENCES JADWAL_PENTING(nomor, tahun, jenjang, waktu_mulai)
 );
 
 CREATE TABLE RUANG_UJIAN(
@@ -174,8 +171,7 @@ CREATE TABLE RUANG_UJIAN(
 	tempat VARCHAR(150) NOT NULL,
 	id SMALLINT NOT NULL,
 	PRIMARY KEY(kota,tempat,id),
-	FOREIGN KEY(kota) REFERENCES LOKASI_UJIAN(kota),
-	FOREIGN KEY(tempat) REFERENCES LOKASI_UJIAN(tempat)
+	FOREIGN KEY(kota, tempat) REFERENCES LOKASI_UJIAN(kota, tempat)
 );
 
 CREATE TABLE PENGAWAS(
@@ -186,9 +182,7 @@ CREATE TABLE PENGAWAS(
 	lokasi_tempat VARCHAR(150) NOT NULL,
 	lokasi_id SMALLINT NOT NULL,
 	PRIMARY KEY(nomor_induk),
-	FOREIGN KEY(lokasi_kota) REFERENCES RUANG_UJIAN(kota),
-	FOREIGN KEY(lokasi_tempat) REFERENCES RUANG_UJIAN(tempat),
-	FOREIGN KEY(lokasi_id) REFERENCES RUANG_UJIAN(id)
+	FOREIGN KEY(lokasi_kota, lokasi_tempat, lokasi_id) REFERENCES RUANG_UJIAN(kota, tempat, id)
 );
 
 CREATE TABLE PENDAFTARAN_PRODI(
