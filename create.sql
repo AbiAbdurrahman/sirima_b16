@@ -50,7 +50,8 @@ CREATE TABLE PENERIMAAN_PRODI(
 	jumlah_pelamar INT,
 	jumlah_diterima INT,
 	PRIMARY KEY(nomor_periode, tahun_periode, kode_prodi),
-	FOREIGN KEY(nomor_periode, tahun_periode) REFERENCES PERIODE_PENERIMAAN(nomor, tahun) 
+	FOREIGN KEY(nomor_periode, tahun_periode) REFERENCES PERIODE_PENERIMAAN(nomor, tahun),
+	FOREIGN KEY(kode_prodi) REFERENCES PROGRAM_STUDI(kode) 
 );
 
 CREATE TABLE PELAMAR(
