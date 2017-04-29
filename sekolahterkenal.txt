@@ -1,0 +1,39 @@
+SMA 1 Jakarta
+SMA 2 Jakarta
+SMA 3 Jakarta
+SMA 6 Jakarta
+SMA 14 Jakarta
+SMA 26 Jakarta
+SMA 28 Jakarta
+SMA 29 Jakarta
+SMA 34 Jakarta
+SMA 38 Jakarta
+SMA 39 Jakarta
+SMA 47 Jakarta
+SMA 48 Jakarta
+SMA 49 Jakarta
+SMA 60 Jakarta
+SMA 61 Jakarta
+SMA 70 Jakarta
+SMA 78 Jakarta
+SMA 82 Jakarta
+SMA 98 Jakarta
+SMA Al-Izhar Pondok Labu
+SMA Pangludi Luhur
+SMA Bakti Mulya 400
+SMA High Scope
+SMA Global Islamic School
+SMA Labschool Kebayoran
+SMA Al-Azhar Pusat
+SMA Pribadi Depok
+SMA 1 Depok
+SMA 2 Depok
+SMA 3 Depok
+SMA 1 Bogor
+SMA 2 Bogor
+SMA 3 Bogor
+SMA 1 Bandung
+SMA 2 Bandung
+SMA 3 Bandung
+SMA 4 Bandung
+SMA 5 Bandung
