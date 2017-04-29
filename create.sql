@@ -109,8 +109,8 @@ CREATE TABLE PENDAFTARAN_SEMAS(
 	no_kartu_ujian CHAR(10) NOT NULL,
 	lokasi_kota VARCHAR(100) NOT NULL,
 	lokasi_tempat VARCHAR(150) NOT NULL,
-	PRIMARY KEY(id_pendaftaran)
-	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN(id)  
+	PRIMARY KEY(id_pendaftaran),
+	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN(id),
 	FOREIGN KEY(lokasi_kota, lokasi_tempat) REFERENCES LOKASI_UJIAN(kota, tempat)
 );
 
