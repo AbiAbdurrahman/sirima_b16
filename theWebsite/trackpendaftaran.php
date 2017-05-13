@@ -62,7 +62,7 @@
       </form>
     </div>
     <div class="container" id="tabel-hasil">
-      <table class="table table-striped">
+      <!-- <table class="table table-striped">
             <thead>
               <tr>
                 <th>Nama Prodi</th>
@@ -91,7 +91,7 @@
                 <td>58</td>
               </tr>
             </tbody>
-      </table>
+      </table> -->
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

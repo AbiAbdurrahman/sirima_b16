@@ -159,12 +159,18 @@ CREATE TABLE PEMBAYARAN(
 CREATE TABLE LOKASI_UJIAN(
 	kota VARCHAR(100) NOT NULL,
 	tempat VARCHAR(150) NOT NULL,
+);
+
+CREATE TABLE LOKASI_JADWAL(
+	kota VARCHAR(100) NOT NULL,
+	tempat VARCHAR(150) NOT NULL,
 	nomor_periode SMALLINT NOT NULL,
 	tahun_periode YEAR NOT NULL,
 	jenjang CHAR(2) NOT NULL,
 	waktu_awal TIMESTAMP NOT NULL,
-	PRIMARY KEY(kota,tempat),
-	FOREIGN KEY(nomor_periode, tahun_periode, jenjang, waktu_awal) REFERENCES JADWAL_PENTING(nomor, tahun, jenjang, waktu_mulai)
+	PRIMARY KEY(kota,tempat,nomor_periode,tahun_periode,jenjang,waktu_awal),
+	FOREIGN KEY(kota,tempat) REFERENCES LOKASI_UJIAN(kota,tempat),
+	FOREIGN KEY(nomor_periode,tahun_periode,jenjang,waktu_awal) REFERENCES JADWAL_PENTING(nomor,tahun,jenjang,waktu_mulai)	
 );
 
 CREATE TABLE RUANG_UJIAN(
