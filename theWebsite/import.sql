@@ -1,4 +1,15 @@
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
 CREATE SCHEMA SIRIMA;
+
+SET search_path to SIRIMA;
 
 CREATE DOMAIN YEAR AS CHAR(4);
 
@@ -103,6 +114,52 @@ CREATE TABLE REKOMENDASI(
 	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN_UUI(id_pendaftaran)
 );
 
+CREATE TABLE LOKASI_UJIAN(
+	kota VARCHAR(100) NOT NULL,
+	tempat VARCHAR(150) NOT NULL
+	PRIMARY KEY(kota,tempat)
+);
+
+CREATE TABLE LOKASI_JADWAL(
+	kota VARCHAR(100) NOT NULL,
+	tempat VARCHAR(150) NOT NULL,
+	nomor_periode SMALLINT NOT NULL,
+	tahun_periode YEAR NOT NULL,
+	jenjang CHAR(2) NOT NULL,
+	waktu_awal TIMESTAMP NOT NULL,
+	PRIMARY KEY(kota,tempat,nomor_periode,tahun_periode,jenjang,waktu_awal),
+	FOREIGN KEY(kota,tempat) REFERENCES LOKASI_UJIAN(kota,tempat),
+	FOREIGN KEY(nomor_periode,tahun_periode,jenjang,waktu_awal) REFERENCES JADWAL_PENTING(nomor,tahun,jenjang,waktu_mulai)	
+);
+
+CREATE TABLE RUANG_UJIAN(
+	kota VARCHAR(100) NOT NULL,
+	tempat VARCHAR(150) NOT NULL,
+	id SMALLINT NOT NULL,
+	PRIMARY KEY(kota,tempat,id),
+	FOREIGN KEY(kota, tempat) REFERENCES LOKASI_UJIAN(kota, tempat)
+);
+
+CREATE TABLE PENGAWAS(
+	nomor_induk VARCHAR(16) NOT NULL,
+	nama VARCHAR(100) NOT NULL,
+	no_telp TEXT NOT NULL,
+	lokasi_kota VARCHAR(100) NOT NULL,
+	lokasi_tempat VARCHAR(150) NOT NULL,
+	lokasi_id SMALLINT NOT NULL,
+	PRIMARY KEY(nomor_induk),
+	FOREIGN KEY(lokasi_kota, lokasi_tempat, lokasi_id) REFERENCES RUANG_UJIAN(kota, tempat, id)
+);
+
+CREATE TABLE PENDAFTARAN_PRODI(
+	id_pendaftaran INT NOT NULL,
+	kode_prodi INT NOT NULL,
+	status_lulus BOOLEAN NOT NULL,
+	PRIMARY KEY(id_pendaftaran,kode_prodi),
+	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN(id),
+	FOREIGN KEY(kode_prodi) REFERENCES PROGRAM_STUDI(kode)
+);
+
 CREATE TABLE PENDAFTARAN_SEMAS(
 	id_pendaftaran INT NOT NULL,
 	status_hadir BOOLEAN NOT NULL,
@@ -156,50 +213,7 @@ CREATE TABLE PEMBAYARAN(
 	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN_SEMAS(id_pendaftaran)
 );
 
-CREATE TABLE LOKASI_UJIAN(
-	kota VARCHAR(100) NOT NULL,
-	tempat VARCHAR(150) NOT NULL,
-);
 
-CREATE TABLE LOKASI_JADWAL(
-	kota VARCHAR(100) NOT NULL,
-	tempat VARCHAR(150) NOT NULL,
-	nomor_periode SMALLINT NOT NULL,
-	tahun_periode YEAR NOT NULL,
-	jenjang CHAR(2) NOT NULL,
-	waktu_awal TIMESTAMP NOT NULL,
-	PRIMARY KEY(kota,tempat,nomor_periode,tahun_periode,jenjang,waktu_awal),
-	FOREIGN KEY(kota,tempat) REFERENCES LOKASI_UJIAN(kota,tempat),
-	FOREIGN KEY(nomor_periode,tahun_periode,jenjang,waktu_awal) REFERENCES JADWAL_PENTING(nomor,tahun,jenjang,waktu_mulai)	
-);
-
-CREATE TABLE RUANG_UJIAN(
-	kota VARCHAR(100) NOT NULL,
-	tempat VARCHAR(150) NOT NULL,
-	id SMALLINT NOT NULL,
-	PRIMARY KEY(kota,tempat,id),
-	FOREIGN KEY(kota, tempat) REFERENCES LOKASI_UJIAN(kota, tempat)
-);
-
-CREATE TABLE PENGAWAS(
-	nomor_induk VARCHAR(16) NOT NULL,
-	nama VARCHAR(100) NOT NULL,
-	no_telp TEXT NOT NULL,
-	lokasi_kota VARCHAR(100) NOT NULL,
-	lokasi_tempat VARCHAR(150) NOT NULL,
-	lokasi_id SMALLINT NOT NULL,
-	PRIMARY KEY(nomor_induk),
-	FOREIGN KEY(lokasi_kota, lokasi_tempat, lokasi_id) REFERENCES RUANG_UJIAN(kota, tempat, id)
-);
-
-CREATE TABLE PENDAFTARAN_PRODI(
-	id_pendaftaran INT NOT NULL,
-	kode_prodi INT NOT NULL,
-	status_lulus BOOLEAN NOT NULL,
-	PRIMARY KEY(id_pendaftaran,kode_prodi),
-	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN(id),
-	FOREIGN KEY(kode_prodi) REFERENCES PROGRAM_STUDI(kode)
-);
 
 INSERT INTO JENJANG(nama) VALUES 
 	('S1'),
@@ -280,7 +294,7 @@ INSERT INTO JADWAL_PENTING(nomor, tahun, jenjang, waktu_mulai, waktu_selesai, de
 	(3,	'2009',	'S3',	'21/4/2009 07:00',	'21/4/2009 09:00',	'Ujian Saringan Masuk'),
 	(3,	'2009',	'S3',	'13/5/2009 17:00',	'13/6/2009 17:00',	'Pengumuman Hasil Seleksi Masuk');
 
-INSERT INTO LOKASI_UJIAN(kota, tempat, nomor_periode, tahun_periode, jenjang, waktu_awal) VALUES
+INSERT INTO LOKASI_UJIAN(kota, tempat) VALUES
 	('Depok',	'Universitas Indonesia'),
 	('Jakarta',	'Universitas Trisakti'),
 	('Tangerang',	'Universitas Swiss dan Jerman'),
