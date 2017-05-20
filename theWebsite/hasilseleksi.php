@@ -1,4 +1,12 @@
-<!DOCTYPE html>
+<?
+  function connectDB() {
+    $pgconn = "";
+    return $pgconn;
+  }
+
+?>
+
+
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -45,25 +53,56 @@
         <div class="form-group">
           <label>Periode</label>
           <select class="form-control" id="periode-penerimaan">
-            <option>2007</option>
-            <option>2008</option>
-            <option>2009</option>
+            <?php
+              $conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");
+              $sql = "SELECT * from SIRIMA.periode_penerimaan";
+
+              $result = pg_query($conn, $sql);
+
+              while ($row = pg_fetch_row($result)) {
+                echo "<option>$row[0] - $row[1]</option>";
+              }
+            ?>
+            <!-- <option>2007</option> -->
           </select>
         </div>
         <div class="form-group">
           <label>Jenjang</label>
-          <select class="form-control" id="periode-penerimaan">
-            <option>S1</option>
+          <select class="form-control" id="jenjang" name="jenjang" onchange="ajaxfunction(this.value)">
+            <?php
+              $conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");
+              $sql = "SELECT * from SIRIMA.jenjang";
+
+              $result = pg_query($conn, $sql);
+
+              while ($row = pg_fetch_row($result)) {
+                echo "<option value='$row[0]'>$row[0]</option>";
+              }
+
+            ?>
+            <!-- <option>S1</option>
             <option>S2</option>
-            <option>S3</option>
+            <option>S3</option> -->
           </select>
         </div>
-        <div class="form-group">
+        <div>    
           <label>Prodi</label>
-          <select class="form-control" id="periode-penerimaan">
-            <option>Ilmu Komputer Reguler</option>
+          <select class="form-control" id="program-studi">
+            <?php
+              /*$conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");
+              $jenjang = $_POST['jenjang-pilihan'];
+              $sql = "SELECT * from SIRIMA.program_studi";
+
+              $result = pg_query($conn, $sql);
+
+              while ($row = pg_fetch_row($result)) {
+                echo "<option>$row[4] - $row[1]</option>";
+              }*/
+            ?>
+            <!-- <option>Ilmu Komputer Reguler</option> -->
           </select>
         </div>
+        <br>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
@@ -104,6 +143,16 @@
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript">
+      function ajaxfunction(jenjang) {
+        $.ajax({
+          url: 'seleksiprocess.php?jenjang=' + jenjang,
+          success: function(data) {
+            $("#program-studi").html(data);
+          }
+        });
+      }
+    </script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
   </body>
