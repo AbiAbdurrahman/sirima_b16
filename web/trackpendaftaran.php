@@ -35,24 +35,28 @@
           <ul class="nav navbar-nav">
             <li><a href="#">Home</a></li>
             <li class="active"><a href="#">Rekap Pendaftaran</a></li>
-            <li><a href="#">Hasil Seleksi</a></li>
+            <li><a href="hasilseleksi.php">Hasil Seleksi</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
     <div class="container" id="input-form">
-      <form>
-        <div class="form-group">
+      <form name="preference" id="post-preference" method="POST">
+        <div class="form-group" id="opsi-periode">
           <label>Periode</label>
-          <select class="form-control" id="periode-penerimaan">
+          <select class="form-control" id="periode-penerimaan" name="periode" onclick="getJenjang(this.value)">
             <?php
+              /* localhost
               $conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");
-              $sql = "SELECT * from SIRIMA.periode_penerimaan";
+              $sql = "SELECT * from SIRIMA.periode_penerimaan"; */
+
+              /* kawung */
+              $conn = pg_connect("host=dbpg.cs.ui.ac.id dbname=b216 user=b216 password=bdb1622016");
 
               $result = pg_query($conn, $sql);
 
               while ($row = pg_fetch_row($result)) {
-                echo "<option>$row[0] - $row[1]</option>";
+                echo "<option value='$row[0]'>$row[0] - $row[1]</option>";
               }
             ?>
             <!-- <option>2007</option>
@@ -60,29 +64,14 @@
             <option>2009</option> -->
           </select>
         </div>
-        <div class="form-group">
-          <label>Jenjang</label>
-          <select class="form-control" id="jenjang">
-            <?php
-              $conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");
-              $sql = "SELECT * from SIRIMA.jenjang";
-
-              $result = pg_query($conn, $sql);
-
-              while ($row = pg_fetch_row($result)) {
-                echo "<option value='$row[0]'>$row[0]</option>";
-              }
-            ?>
-            <!-- <option>S1</option>
-            <option>S2</option>
-            <option>S3</option> -->
-          </select>
+        <div class="form-group" id="opsi-jenjang">
+          
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <input type="button" class="btn btn-primary" value="Submit" onclick="submitpreferences(this.form)" />
       </form>
     </div>
     <div class="container" id="tabel-hasil">
-      <!-- <table class="table table-striped">
+      <table class="table table-striped">
             <thead>
               <tr>
                 <th>Nama Prodi</th>
@@ -93,8 +82,8 @@
                 <th>Jumlah Diterima</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
+            <tbody id="table-result">
+             <!-- <tr>
                 <td>Ilmu Komputer</td>
                 <td>Reguler</td>
                 <td>Ilmu Komputer</td>
@@ -109,13 +98,35 @@
                 <td>140</td>
                 <td>200</td>
                 <td>58</td>
-              </tr>
+              </tr> --> 
             </tbody>
-      </table> -->
+      </table>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      function getJenjang(periode) {
+        $.ajax({
+          url: 'optionjenjang.php?periode=' + periode,
+          success: function(data) {
+            $('#opsi-jenjang').html(data);
+          }
+        });
+
+      }
+
+      function submitpreferences(form) {
+        $.ajax({
+          method: 'POST',
+          url: 'trackprocess.php',
+          data: $(form).serialize(),
+          success: function(data) {
+            $('#table-result').html(data);
+          }
+        });
+      }
+    </script>
   </body>
 </html>

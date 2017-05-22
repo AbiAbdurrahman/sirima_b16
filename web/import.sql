@@ -11,6 +11,8 @@ CREATE SCHEMA SIRIMA;
 
 SET search_path to SIRIMA;
 
+SET datestyle to dmY;
+
 CREATE DOMAIN YEAR AS CHAR(4);
 
 CREATE TABLE AKUN(
@@ -116,7 +118,7 @@ CREATE TABLE REKOMENDASI(
 
 CREATE TABLE LOKASI_UJIAN(
 	kota VARCHAR(100) NOT NULL,
-	tempat VARCHAR(150) NOT NULL
+	tempat VARCHAR(150) NOT NULL,
 	PRIMARY KEY(kota,tempat)
 );
 
@@ -212,8 +214,6 @@ CREATE TABLE PEMBAYARAN(
 	PRIMARY KEY(id),
 	FOREIGN KEY(id_pendaftaran) REFERENCES PENDAFTARAN_SEMAS(id_pendaftaran)
 );
-
-
 
 INSERT INTO JENJANG(nama) VALUES 
 	('S1'),
@@ -353,6 +353,27 @@ INSERT INTO PENGAWAS (nomor_induk,nama,no_telp,lokasi_kota,lokasi_tempat,lokasi_
 INSERT INTO PENGAWAS (nomor_induk,nama,no_telp,lokasi_kota,lokasi_tempat,lokasi_id) VALUES ('3218371917391912','Jessica Galicia','081366667778','Jakarta','Universitas Bina Nusantara','16');
 INSERT INTO PENGAWAS (nomor_induk,nama,no_telp,lokasi_kota,lokasi_tempat,lokasi_id) VALUES ('9283902839021001','Tevin Aura Arditi','087129182389','Tangerang','Universitas Pelita Harapan','17');
 INSERT INTO PENGAWAS (nomor_induk,nama,no_telp,lokasi_kota,lokasi_tempat,lokasi_id) VALUES ('7313891155555555','Mirza Pratiwi Arkanda','085772671997','Tangerang','Universitas Pelita Harapan','18');
+
+INSERT INTO AKUN(username, role, password) VALUES 
+('taniya555', FALSE, 'notabot99'),
+('agil69', FALSE, 'falsebot78');
+
+INSERT INTO PELAMAR(username, nama_lengkap, alamat, jenis_kelamin, tanggal_lahir, no_ktp, email) VALUES
+('taniya555', 'Taniya Putri', 'Jl. Cendrawasih No. 3, Depok', 'P', '2/12/1990', '9582983128380139', 'taniya.putri@gmail.com'),
+('agil69', 'Agil Baskoro', 'Jl. Echo No. 17 Ragunan, Jakarta Selatan', 'L', '11/11/1989', '018310294751737', 'aqu.agila@hotmail.com');
+
+INSERT INTO PENDAFTARAN(id, status_lulus, status_verifikasi, npm, pelamar, nomor_periode, tahun_periode) VALUES
+(1234, TRUE, TRUE, '0128347355', 'taniya555', 1, '2007'),
+(5678, TRUE, TRUE, '0183845039', 'agil69', 1, '2007');
+
+INSERT INTO PENDAFTARAN_PRODI(id_pendaftaran, kode_prodi, status_lulus) VALUES
+(1234, 4, TRUE),
+(5678, 1, TRUE);
+
+INSERT INTO PENERIMAAN_PRODI(nomor_periode, tahun_periode, kode_prodi, kuota, jumlah_pelamar, jumlah_diterima) VALUES
+(1, '2007', 4, 350, 0, 0),
+(1, '2007', 3, 400, 0, 0),
+(2, '2008', 4, 200, 0, 0);
 
 CREATE OR REPLACE FUNCTION UpdateJumlahPelamar()
 RETURNS trigger AS

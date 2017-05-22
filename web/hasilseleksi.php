@@ -1,11 +1,3 @@
-<?
-  function connectDB() {
-    $pgconn = "";
-    return $pgconn;
-  }
-
-?>
-
 
 <html lang="en">
   <head>
@@ -42,35 +34,42 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="#">Home</a></li>
-            <li><a href="#">Rekap Pendaftaran</a></li>
+            <li><a href="trackpendaftaran.php">Rekap Pendaftaran</a></li>
             <li class="active"><a href="#">Hasil Seleksi</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
     <div class="container" id="input-form">
-      <form>
-        <div class="form-group">
+      <form name="preference" id="post-preference" method="POST">
+        <div class="form-group" id="opsi-periode">
           <label>Periode</label>
-          <select class="form-control" id="periode-penerimaan">
+          <select class="form-control" name="periode" id="periode-penerimaan">
             <?php
-              $conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");
+              
+              /* localhost
+              $conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");*/
+              /* kawung */
+              $conn = pg_connect("host=dbpg.cs.ui.ac.id dbname=b216 user=b216 password=bdb1622016");
               $sql = "SELECT * from SIRIMA.periode_penerimaan";
 
               $result = pg_query($conn, $sql);
 
               while ($row = pg_fetch_row($result)) {
-                echo "<option>$row[0] - $row[1]</option>";
+                echo "<option value='$row[0]'>$row[0] - $row[1]</option>";
               }
             ?>
             <!-- <option>2007</option> -->
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="opsi-jenjang">
           <label>Jenjang</label>
-          <select class="form-control" id="jenjang" name="jenjang" onchange="ajaxfunction(this.value)">
+          <select class="form-control" id="jenjang" name="jenjang" onclick="getProdi(this.value)">
             <?php
-              $conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");
+              /* localhost
+              $conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");*/
+              /* kawung */
+              $conn = pg_connect("host=dbpg.cs.ui.ac.id dbname=b216 user=b216 password=bdb1622016");
               $sql = "SELECT * from SIRIMA.jenjang";
 
               $result = pg_query($conn, $sql);
@@ -80,34 +79,17 @@
               }
 
             ?>
-            <!-- <option>S1</option>
-            <option>S2</option>
-            <option>S3</option> -->
           </select>
         </div>
-        <div>    
-          <label>Prodi</label>
-          <select class="form-control" id="program-studi">
-            <?php
-              /*$conn = pg_connect("host=localhost port=5432 dbname=abdurrahmansaleh51 user=postgres password=basdatb16");
-              $jenjang = $_POST['jenjang-pilihan'];
-              $sql = "SELECT * from SIRIMA.program_studi";
-
-              $result = pg_query($conn, $sql);
-
-              while ($row = pg_fetch_row($result)) {
-                echo "<option>$row[4] - $row[1]</option>";
-              }*/
-            ?>
-            <!-- <option>Ilmu Komputer Reguler</option> -->
-          </select>
+        <div class="form-group" id="opsi-prodi">         
+          <!-- div ini diisi melalui proses yang ada di optionprodi.php -->
         </div>
         <br>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <input type="button" class="btn btn-primary" onclick="submitpreferences(this.form)" name="submit" value="Submit"/>
       </form>
     </div>
     <div class="container" id="tabel-hasil">
-      <!-- <table class="table table-striped">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th>Id Pendaftaran</th>
@@ -119,36 +101,29 @@
                 <th>Email</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1234</td>
-                <td>Taniya Putri</td>
-                <td>Jl. Cendrawasih 2, Depok</td>
-                <td>Perempuan</td>
-                <td>2 Desember 1990</td>
-                <td>1234543456678</td>
-                <td>Taniya@gmail.com</td>
-              </tr>
-              <tr>
-                <td>5678</td>
-                <td>Agil Baskoro</td>
-                <td>Jl. Veteran 15, Jakarta</td>
-                <td>Laki-laki</td>
-                <td>15 November 1990</td>
-                <td>0987656787655</td>
-                <td>agil@gmail.com</td>
-              </tr>
+            <tbody id="table-result">
+              <!-- tabel ini diisi melalui proses yang ada di seleksiprocess.php -->
             </tbody>
-      </table> -->
+      </table> 
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script type="text/javascript">
-      function ajaxfunction(jenjang) {
+      function getProdi(jenjang) {
         $.ajax({
-          url: 'seleksiprocess.php?jenjang=' + jenjang,
+          url: 'optionprodi.php?jenjang=' + jenjang,
           success: function(data) {
-            $("#program-studi").html(data);
+            $("#opsi-prodi").html(data);
+          }
+        });
+      }
+      function submitpreferences(form) {
+        $.ajax({
+          method: 'POST',
+          url: 'seleksiprocess.php',
+          data: $(form).serialize(),
+          success: function(data) {
+            $('#table-result').html(data);
           }
         });
       }
